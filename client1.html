@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Partenaire</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      margin: 0;
+      padding: 0;
+      color: #e5e7eb;
+    }
+
+    .container {
+      max-width: 420px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: #020617;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      border: 1px solid #1e293b;
+    }
+
+    h2, h3 {
+      margin: 6px 0;
+      font-weight: 600;
+    }
+
+    h3 {
+      font-size: 16px;
+      color: #93c5fd;
+    }
+
+    .solde {
+      font-size: 30px;
+      font-weight: bold;
+      color: #22c55e;
+      margin-top: 5px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .btn-retrait {
+      background: linear-gradient(135deg, #dc2626, #991b1b);
+      color: #fff;
+    }
+
+    .btn-depot {
+      background: linear-gradient(135deg, #16a34a, #166534);
+      color: #fff;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      padding: 10px 0;
+      border-bottom: 1px solid #1e293b;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .plus { color: #22c55e; }
+    .minus { color: #ef4444; }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 25px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- PROFIL -->
+  <div class="card">
+    <h2 id="nom"></h2>
+    <p>Solde disponible</p>
+    <div class="solde"><span id="solde"></span> €</div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="card">
+    <button class="btn btn-retrait" onclick="goTapTap()">💸 Demander un retrait</button>
+    <button class="btn btn-depot" onclick="goTapTap()">➕ Faire un dépôt</button>
+  </div>
+
+  <!-- HISTORIQUE -->
+  <div class="card">
+    <h3>📊 Historique des opérations</h3>
+    <ul id="historique"></ul>
+  </div>
+
+  <div class="footer">
+    Espace partenaire sécurisé – consultation uniquement
+  </div>
+
+</div>
+
+<script>
+/* ============================
+   🔧 DONNÉES — TU MODIFIES ICI
+   ============================ */
+
+const partenaire = {
+  id: "emma01",
+  nom: "Emmanuel",
+  solde: 190.75,
+  historique: [
+    { date: "10/01", desc: "Tâche WhatsApp", montant: 4.5 },
+    { date: "11/01", desc: "Parrainage", montant: 7 },
+    { date: "12/01", desc: "Retrait validé", montant: -30 }
+  ]
+};
+
+/* ============================
+   📊 AFFICHAGE
+   ============================ */
+
+document.getElementById("nom").innerText = partenaire.nom;
+document.getElementById("solde").innerText = partenaire.solde.toFixed(2);
+
+const histo = document.getElementById("historique");
+
+partenaire.historique.forEach(h => {
+  const li = document.createElement("li");
+  li.innerHTML = `
+    <span>${h.date} – ${h.desc}</span>
+    <strong class="${h.montant >= 0 ? 'plus' : 'minus'}">
+      ${h.montant >= 0 ? '+' : ''}${h.montant.toFixed(2)} €
+    </strong>
+  `;
+  histo.appendChild(li);
+});
+
+/* ============================
+   🔁 REDIRECTION TAPTAP SEND
+   ============================ */
+
+function goTapTap() {
+  window.location.href = "taptapsend.html";
+}
+</script>
+
+</body>
+</html>
