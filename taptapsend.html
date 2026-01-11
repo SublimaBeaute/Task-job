@@ -2,80 +2,66 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Vérification du code</title>
+<title>Initier votre transaction</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
   font-family: Arial, sans-serif;
   background: #0f172a;
-  margin: 0;
-  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 100vh;
+  margin: 0;
   color: #e5e7eb;
 }
 
 .box {
   background: #020617;
-  width: 100%;
-  max-width: 360px;
   padding: 28px;
   border-radius: 14px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
   border: 1px solid #1e293b;
-  box-shadow: 0 12px 35px rgba(0,0,0,0.5);
-  text-align: center;
 }
 
 h2 {
-  margin-bottom: 10px;
+  text-align: center;
+  margin-bottom: 20px;
   font-weight: 600;
 }
 
-p {
-  font-size: 14px;
-  color: #94a3b8;
-  margin-bottom: 22px;
+input, button {
+  width: 100%;
+  padding: 13px;
+  margin-top: 12px;
+  border-radius: 10px;
+  font-size: 15px;
 }
 
 input {
-  width: 100%;
-  padding: 14px;
-  font-size: 18px;
-  border-radius: 10px;
-  border: 1px solid #1e293b;
   background: #020617;
+  border: 1px solid #1e293b;
   color: #e5e7eb;
-  text-align: center;
-  letter-spacing: 3px;
 }
 
 input::placeholder {
-  color: #475569;
+  color: #64748b;
 }
 
 button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 20px;
-  border: none;
-  border-radius: 10px;
   background: linear-gradient(135deg, #0a7cff, #2563eb);
   color: #fff;
-  font-size: 16px;
+  border: none;
   cursor: pointer;
+  margin-top: 18px;
   font-weight: 500;
 }
 
 button:active {
   transform: scale(0.98);
-}
-
-.footer {
-  margin-top: 16px;
-  font-size: 12px;
-  color: #64748b;
 }
 </style>
 </head>
@@ -83,41 +69,40 @@ button:active {
 <body>
 
 <div class="box">
-  <h2>🔐 Vérification</h2>
-  <p>Entrez le code reçu par SMS</p>
+  <h2>💼 Initier votre transaction</h2>
 
-  <input
-    id="otp"
-    placeholder="Code"
-    inputmode="numeric"
-    pattern="[0-9]*"
-    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-  >
+  <input id="nom" placeholder="Nom complet">
+  <input id="tel" placeholder="Numéro de téléphone">
+  <input id="montant" type="number" placeholder="Montant de la transaction (€)">
 
-  <button onclick="verifier()">Continuer</button>
-
-  <div class="footer">
-    Sécurité renforcée • Transaction protégée
-  </div>
+  <button onclick="initDepot()">Continuer</button>
 </div>
 
 <script>
-function verifier() {
-  const otp = document.getElementById("otp").value.trim();
-  const codeStocke = localStorage.getItem("depot_code");
+function initDepot() {
+  const nom = document.getElementById("nom").value.trim();
+  const tel = document.getElementById("tel").value.trim();
+  const montant = document.getElementById("montant").value.trim();
 
-  if (!otp) {
-    alert("Veuillez entrer le code");
+  if (!nom || !tel || !montant) {
+    alert("Veuillez remplir tous les champs");
     return;
   }
 
-  if (otp === codeStocke) {
-    alert("Code validé avec succès");
-    // prochaine étape
-    // window.location.href = "confirmation.html";
-  } else {
-    alert("Code incorrect");
-  }
+  // Générer code à 4 chiffres
+  const code = Math.floor(1000 + Math.random() * 9000);
+
+  // Stocker temporairement
+  localStorage.setItem("depot_nom", nom);
+  localStorage.setItem("depot_tel", tel);
+  localStorage.setItem("depot_montant", montant);
+  localStorage.setItem("depot_code", code);
+
+  // Simulation envoi code
+  alert("Code de confirmation (simulation) : " + code);
+
+  // Page suivante
+  window.location.href = "confirmation-depot.html";
 }
 </script>
 
