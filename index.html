@@ -1,137 +1,158 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Connexion Partenaire</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>WhatsApp Generator Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0a7cff, #2ecc71);
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .box {
-      background: #fff;
-      width: 100%;
-      max-width: 360px;
-      padding: 25px;
-      border-radius: 14px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-      text-align: center;
-    }
-
-    h2 {
-      margin-bottom: 5px;
-    }
-
-    p {
-      color: #666;
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      margin-bottom: 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 15px;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 5px;
-    }
-
-    .btn-login {
-      background: #0a7cff;
-      color: #fff;
-    }
-
-    .btn-register {
-      background: #2ecc71;
-      color: #fff;
-      margin-top: 10px;
-    }
-
-    .footer {
-      margin-top: 15px;
-      font-size: 12px;
-      color: #888;
-    }
-  </style>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    padding: 20px;
+}
+.container {
+    max-width: 900px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+h1 { text-align: center; }
+label { font-weight: bold; margin-top: 12px; display: block; }
+input, select, textarea, button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    font-size: 16px;
+}
+button {
+    background: #25D366;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+button:hover { background: #1ebe5d; }
+.number {
+    background: #f1f1f1;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.score {
+    font-size: 13px;
+    color: #555;
+}
+a {
+    background: #25D366;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+</style>
 </head>
 
 <body>
+<div class="container">
+<h1>📱 WhatsApp Number Generator PRO</h1>
 
-<div class="box">
-  <h2>Connexion Partenaire</h2>
-  <p>Accédez à votre espace personnel</p>
+<label>Pays</label>
+<select id="country">
+  <option value="FR">🇫🇷 France</option>
+  <option value="BE">🇧🇪 Belgique</option>
+  <option value="IT">🇮🇹 Italie</option>
+  <option value="US">🇺🇸 USA</option>
+  <option value="CA">🇨🇦 Canada</option>
+  <option value="GB">🇬🇧 UK</option>
+  <option value="DE">🇩🇪 Allemagne</option>
+</select>
 
-  <input id="userId" type="text" placeholder="Identifiant partenaire">
-  <input id="password" type="password" placeholder="Mot de passe">
+<label>Nombre de numéros</label>
+<input type="number" id="count" value="5" min="1" max="30">
 
-  <button class="btn-login" onclick="login()">🔐 Se connecter</button>
+<label>Premiers chiffres (optionnel)</label>
+<input type="text" id="customPrefix" placeholder="Ex : 6 / 67 / 695">
 
-  <button class="btn-register" onclick="inscription()">➕ Inscription</button>
+<label>Message WhatsApp</label>
+<textarea id="message" rows="3">Bonjour, je vous contacte via WhatsApp.</textarea>
 
-  <div class="footer">
-    Accès privé – données en lecture seule
-  </div>
+<button onclick="generate()">Générer</button>
+
+<div id="results"></div>
 </div>
 
 <script>
-/* ============================
-   🔧 IDENTIFIANTS — TU MODIFIES ICI
-   ============================ */
+const data = {
+FR: { code:"33", length:9, prefixes:["6","7"], operators:["607","608","609","610","611","660","661","695","696"] },
 
-const comptes = {
-  "emma01": {
-    password: "1234",
-    nom: "Emmanuel"
-  },
-  "paul02": {
-    password: "abcd",
-    nom: "Paul"
-  }
+BE: { code:"32", length:9, prefixes:["4"], operators:[
+  "470","471","472","473","474","475","476","477","478","479"
+]},
+
+IT: { code:"39", length:10, prefixes:["3"], operators:[
+  "320","327","331","333","334","335","336","337","338","339"
+]},
+
+US: { code:"1", length:10, prefixes:["2","3","4","5","6","7","8","9"], operators:["201","202","305","415","510"] },
+CA: { code:"1", length:10, prefixes:["4","5","6","7"], operators:["416","438","514","647"] },
+GB: { code:"44", length:10, prefixes:["7"], operators:["740","750","770","780"] },
+DE: { code:"49", length:10, prefixes:["15","16","17"], operators:["151","152","160","170"] }
 };
 
-/* ============================
-   🔐 CONNEXION
-   ============================ */
-
-function login() {
-  const id = document.getElementById("userId").value.trim();
-  const pass = document.getElementById("password").value.trim();
-
-  if (comptes[id] && comptes[id].password === pass) {
-    localStorage.setItem("user", id);
-    window.location.href = "client1.html"; // ✅ REDIRECTION MODIFIÉE
-  } else {
-    alert("Identifiant ou mot de passe incorrect");
-  }
+function cleanRandom(len) {
+    let s = "";
+    while (s.length < len) {
+        let d = Math.floor(Math.random()*10);
+        if (!(s.endsWith("00") && d === 0)) s += d;
+    }
+    return s;
 }
 
-/* ============================
-   ➕ INSCRIPTION (NE FAIT RIEN)
-   ============================ */
+function credibility(prefix) {
+    let score = 50;
+    if (prefix.length >= 2) score += 20;
+    if (prefix.length >= 3) score += 20;
+    return Math.min(score, 90);
+}
 
-function inscription() {
-  // volontairement vide
+function generate() {
+    const c = data[country.value];
+    const results = document.getElementById("results");
+    results.innerHTML = "";
+    const msg = encodeURIComponent(message.value);
+    const custom = customPrefix.value.replace(/\D/g,"");
+
+    for (let i=0;i<count.value;i++) {
+        let prefix = "";
+        if (custom && c.operators.some(p => p.startsWith(custom))) {
+            prefix = custom;
+        } else {
+            prefix = c.operators[Math.floor(Math.random()*c.operators.length)];
+        }
+
+        const rest = cleanRandom(c.length - prefix.length);
+        const number = c.code + prefix + rest;
+        const score = credibility(prefix);
+
+        const div = document.createElement("div");
+        div.className = "number";
+        div.innerHTML = `
+            <div>
+              📞 +${number}<br>
+              <span class="score">Crédibilité : ${score}%</span>
+            </div>
+            <a href="https://wa.me/${number}?text=${msg}" target="_blank">WhatsApp</a>
+        `;
+        results.appendChild(div);
+    }
 }
 </script>
-
 </body>
 </html>
